@@ -1,0 +1,54 @@
+{
+  "name": "react-informal",
+  "version": "0.0.0",
+  "description": "React forms without the ceremony",
+  "main": "cjs/index.js",
+  "scripts": {
+    "build": "babel ./lib --out-dir ./cjs",
+    "dev": "babel ./lib --out-dir ./cjs --watch",
+    "format": "prettier-eslint './lib/**/*.js' --write"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arturmuller/react-informal.git"
+  },
+  "keywords": [
+    "react",
+    "form",
+    "forms",
+    "input",
+    "inputs",
+    "validation",
+    "hoc",
+    "enhancer",
+    "simple",
+    "easy"
+  ],
+  "author": "Artur Muller <me@arturmuller.com> (http://arturmuller.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/arturmuller/react-informal/issues"
+  },
+  "homepage": "https://github.com/arturmuller/react-informal#readme",
+  "dependencies": {
+    "debug": "^2.6.3",
+    "eslint-config-lusk": "^1.0.1",
+    "invariant": "^2.2.2",
+    "prettier-eslint-cli": "^3.4.1",
+    "prop-types": "^15.5.8",
+    "ramda": "^0.23.0"
+  },
+  "peerDependencies": {
+    "react": "^15.5.4"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-core": "^6.24.1",
+    "babel-plugin-ramda": "^1.2.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-preset-env": "^1.4.0",
+    "babel-preset-react": "^6.24.1",
+    "eslint": "^3.19.0"
+  }
+}
