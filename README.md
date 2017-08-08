@@ -11,6 +11,7 @@ If you find this pattern familiar, it is because this is exactly how the regular
 <!--
 TODO: Explain what is contained within this lib.
 TODO: Mention this article for people that have no idea what HOCs are. https://medium.com/@dan_abramov/mixins-are-dead-long-live-higher-order-components-94a0d2f9e750
+TODO: Mention this article for people that have no idea what HOCs are. https://medium.com/@learnreact/container-components-c0e67432e005
 -->
 
 ## Installation
