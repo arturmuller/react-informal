@@ -4,6 +4,7 @@
   "description": "React forms without the ceremony",
   "main": "cjs/index.js",
   "scripts": {
+    "prepublishOnly": "npm run build",
     "build": "babel ./lib --out-dir ./cjs",
     "dev": "babel ./lib --out-dir ./cjs --watch",
     "format": "prettier-eslint './lib/**/*.js' --write"
