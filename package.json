@@ -42,9 +42,9 @@
   "devDependencies": {
     "babel-cli": "^6.24.1",
     "babel-core": "^6.24.1",
-    "babel-preset-lusk": "^0.0.2",
-    "eslint": "^3.19.0",
-    "eslint-config-lusk": "^1.0.2",
-    "prettier-eslint-cli": "^3.4.1"
+    "babel-preset-lusk": "0.0.2",
+    "eslint": "^4.4.1",
+    "eslint-config-lusk": "^2.0.0",
+    "prettier-eslint-cli": "^4.1.1"
   }
 }
