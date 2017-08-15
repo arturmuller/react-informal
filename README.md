@@ -4,29 +4,18 @@
 
 Use components — the primary form of abstraction in React — to configure forms. No up-front setup, no state-management boilerplate.
 
-Rules, like field names or validations, are supplied as props to field components, which become registered by to form simply by mounting. This approach leads to modular, reusable, and flexible code.
+Rules, like field names or validations, are supplied as props to field components, which become registered by to form simply by mounting. If you find this pattern familiar, it is because this is exactly how the regular HTML form elements work! :sparkles:
 
-If you find this pattern familiar, it is because this is exactly how the regular HTML form elements work! :sparkles:
-
-<!--
-TODO: Explain what is contained within this lib.
-TODO: Mention this article for people that have no idea what HOCs are. https://medium.com/@dan_abramov/mixins-are-dead-long-live-higher-order-components-94a0d2f9e750
-TODO: Mention this article for people that have no idea what HOCs are. https://medium.com/@learnreact/container-components-c0e67432e005
--->
+This approach leads to modular, reusable, and flexible code.
 
 ## Installation
 
 ```sh
-# Using yarn
-yarn add react-informal
-
-# Using npm
 npm install --save react-informal
 ```
 
-## Examples
 
-### Barebones
+## Barebones Example
 
 Suppose we have the following tiny app:
 
@@ -36,85 +25,43 @@ import ReactDOM from "react-dom";
 import { Form, connectField } from "react-informal";
 
 // Barebones text field component
-const TextField = connectField()(({ field, ...rest }) => (
+const TextField = connectField()(({ field, ...rest }) =>
   <input {...rest} {...field.input} />
-));
-
-// Mock submission function
-const submit = formData => {
-  alert(JSON.stringify(formData));
-  return Promise.resolve();
-};
+);
 
 // Main view component
-const View = () => (
-  <Form onSubmit={submit}>
+const View = () =>
+  <Form onSubmit={data => Promise.resolve(alert(JSON.stringify(data)))}>
     <TextField name="name" />
     <TextField name="email" />
     <TextField name="tel" />
     <button type="submit">Submit</button>
-  </Form>
-);
+  </Form>;
 
 // Render components to DOM
-ReactDOM.render(<View/>, document.getElementById("app"));
+ReactDOM.render(<View />, document.getElementById("app"));
 ```
 
-Now, if the user fills in the above form with "John", "john@example.com", and "+44 200 200 200" for name, email, and tel respectively, the `submit` function would be called with `{name: "John", email: "john@example.com", tel: "+44 200 200 200"}` as arguments once the Submit button is clicked.
+Now, if the user fills in the above form with "John", "john@example.com", and "+44 200 200 200" for name, email, and tel respectively, the `onSubmit` handler would be called with the argument `{name: "John", email: "john@example.com", tel: "+44 200 200 200"}` once the Submit button is clicked.
 
-###
-
-```js
-import React from "react";
-import { Form, connectField, connectForm } from "react-informal";
-
-// Form sub-components
-const mapFieldProps = field => ({...field.input, messages: field.messages });
-const TextField = connectField(mapFieldProps)(({ label, messages, ...rest }) => (
-  <div>
-    <div>{label}</div>
-    <input {...rest} />
-    {messages.length > 0 &&
-      messages.map(message => <div key={message}>{message}</div>)}
-  </div>
-));
-
-const mapHandlerProps = form => ({ error: form.error });
-const ErrorHandler = connectForm(mapHandlerProps)(({ error }) => (
-  <div>
-    {error && <p>Form submission failed</p>}
-  </div>
-));
-
-const mapSubmitProps = form => ({ valid: form.valid });
-const SubmitButton = connectForm(mapSubmitProps)(({ valid }) => (
-  <button type="submit" disabled={!valid}>Submit</button>
-));
-
-// Mock submission function
-const submit = formData =>
-  new Promise(resolve => setTimeout(resolve, 350, formData));
-
-// Validation objects
-const required = { test: /(.+)/, message: "This field is required" };
-const email = { test: /(.+)@(.+)\.(.+)/, message: "Email has to be valid" };
-
-// Main view component
-const View = () => (
-  <Form onSubmit={submit}>
-    <TextField label="Name" name="name" validations={[required]} />
-    <TextField label="Email" name="email" validations={[required, email]} />
-    <TextField label="Telephone" name="tel" />
-    <ErrorHandler />
-    <SubmitButton />
-  </Form>
-);
-
-```
 
 ## API Overview
 
+The library contains three components, all available as named exports.
+
+- `Form` component
+- `connectField` higher-order component
+- `connectForm` higher-order component
+
+> If you're unsure about what higher-order components are, I recommend these two articles for a quick primer: [Mixins are Dead, Long Live Higher Order Components](https://medium.com/@dan_abramov/mixins-are-dead-long-live-higher-order-components-94a0d2f9e750), and [Container Components](https://medium.com/@learnreact/container-components-c0e67432e005)
+
+
 ### `Form` Component
+
+<!--
+TODO: Mention noValidation default prop
+TODO: Mention prevent default
+-->
 
 The `Form` component provides top-level form state, exposes it to nested components and handles submissions.
 
@@ -126,31 +73,73 @@ All other props will be passed to the underlying DOM element `<form>`.
 
 Once `onSubmit` is triggered, the following things will happen:
 
-1. The form and all nested fields will be marked as `submitted`. Any connected component can use this prop to, for instance, show validation messages.
-2. If the form is valid, the function passed to `onSubmit` will be called and form `status` prop set to `"pending"`. If the form is not valid, no further actions will happen.
-3. If the promise returned from the submit function fulfills, the form `status` will be set to `fulfilled`, and the fulfilled value will be made available under the `data` prop.
-4. If the promise returned from the submit function rejects, the form `status` will be set to `rejected`, and the rejected value will be made available under the `error` prop.
+1. The form will check whether it is valid and all nested fields will be marked as `submitted`. Any connected component can use this prop to, for instance, show validation messages.
+2. If the form is not valid, no further actions take place.
+3. If the form is valid, the `onSubmit` handler will be called and form `status` prop set to `"pending"`.
+4. If the promise returned from the submit function resolves successfully, the form `status` will be set to `fulfilled`, and the resulting value will be made available under the `data` prop.
+5. If the promise returned from the submit function rejects, the form `status` will be set to `rejected`, and the rejected value will be made available under the `error` prop.
+
+<!-- TODO: A state diagram might be handy here. -->
 
 ```js
-// Example usage
+import React from "react";
+import { Form } from "react-informal";
 
-const View = () => (
-  <Form onSubmit={data}>
+const View = () =>
+  <Form onSubmit={data => Promise.resolve(alert(JSON.stringify(data)))}>
     {/* children */}
-  </Form>
+  </Form>;
 )
 ```
 
-<!--
-TODO: Mention noValidation default prop
-TODO: Mention prevent default
--->
+Note that just like native DOM `<form>` elements, `<Form>` components cannot be nested.
+
 
 ### `connectField` Higher-Order Component
 
-The `connectField` registers a form field element in the top-level form state upon mounting, and supplies relevant state and methods to the component so that it can update the state.
+The `connectField` registers a form field element in the top-level form state upon mounting, and supplies relevant state and methods to the wrapped component so that it can update the state. This is the component you will probably interact with the most.
 
-This is the component you will probably interact with the most.
+`connectField` takes two arguments:
+
+- `mapProps`: fn (formState) => props (optional) — Mapping function
+- `Component`: React Component
+
+The return value of `connectField(mapProps)(Component)` is an enhanced component that uses three props:
+
+- `name`: string (required) — Used to namespace the value of this component into the `data` object which is passed to the form `onSubmit` handler.
+- `defaultValue`: string (optional) — If you want to initialise this form field with something else then an empty string, add it here.
+- `validations`: Array of validation objects (optional)
+
+```js
+import React from "react";
+import { connectField } from "react-informal";
+
+// Plain TextField component
+const PlainTextField = ({ label, messages, ...rest }) =>
+  <div>
+    <div>{label}</div>
+    <input {...rest} />
+    {messages.length > 0 &&
+      messages.map(message => <div key={message}>{message}</div>)
+    }
+  </div>
+
+// Use `connectField` to connect the plain text field to form state
+const mapFieldProps = field => ({ ...field.input, messages: field.messages });
+const TextField = connectField(mapFieldProps)(PlainTextField)
+
+// ---
+
+// FormTextField usage
+const View = () =>
+  <Form onSubmit={data => Promise.resolve(alert(JSON.stringify(data)))}>
+    <TextField name="name"/>
+    <TextField name="username"/>
+    <button type="submit">Submit</button>
+  </Form>;
+)
+
+```
 
 <!--
 TODO: Add example usage
@@ -214,14 +203,6 @@ Forms have a lot of different state types that can get pretty confusing. In the 
 - field is `dirty` if its value differs from its default value
 - field is `submitted` if the form has been submitted at least once
 
-### Form Component
-
-The Form component serves two primary roles:
-
-1. It contains all form state.
-2. It provides a way for nested components to subscribe to state update and transform this state. This is done indirectly when using the `connectForm` and `connectField` higher-order components.
-
-Note that just like native DOM `<form>` elements, `<Form>` components cannot be nested.
 
 Form
 
