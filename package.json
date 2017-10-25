@@ -1,6 +1,6 @@
 {
   "name": "react-informal",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "React forms without the ceremony",
   "main": "cjs/index.js",
   "scripts": {
