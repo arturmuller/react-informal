@@ -32,20 +32,20 @@
   },
   "homepage": "https://github.com/arturmuller/react-informal#readme",
   "dependencies": {
-    "debug": "^2.6.3",
+    "debug": "^2.6.9",
     "invariant": "^2.2.2",
-    "prop-types": "^15.5.8",
+    "prop-types": "^15.6.0",
     "ramda": "^0.23.0"
   },
   "peerDependencies": {
     "react": "^15.0.0 || ^16.0.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.24.1",
-    "babel-core": "^6.24.1",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
     "babel-preset-lusk": "0.0.2",
-    "eslint": "^4.4.1",
+    "eslint": "^4.9.0",
     "eslint-config-lusk": "^2.0.0",
-    "prettier-eslint-cli": "^4.1.1"
+    "prettier-eslint-cli": "^4.4.0"
   }
 }
